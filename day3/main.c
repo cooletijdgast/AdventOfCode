@@ -9,12 +9,13 @@
 
 int checkForCharacter(char map[HEIGHT][WIDTH], int y, int x);
 
+int sum = 0, mapNumber = 0;
+
 int main() {
     FILE *fp;
     fp = fopen("input.txt", "r");
 
-    int mapNumber = 0, sum = 0;
-    char mapChar[10] = {""}, singleMapCharacter, map[HEIGHT][WIDTH];
+    char mapChar[10] = {""}, map[HEIGHT][WIDTH];
     bool validNumber = false;
 
     for (int i = 0; i < HEIGHT; i++) {
@@ -29,18 +30,17 @@ int main() {
             if (isdigit(map[y][x])) {
                 sprintf(mapChar, "%d%c", mapNumber, map[y][x]);
                 mapNumber = atoi(mapChar);
-                if (checkForCharacter(map, y, x) && mapNumber > 0) {
-//                    printf("%d\n", mapNumber);
+                if (mapNumber > 0 && (checkForCharacter(map, y, x) == 1)) {
                     validNumber = true;
                 }
             }
 
-            if (map[y][x] == '.') {
-                if(validNumber){
-                    printf("%d\n", mapNumber);
+            if (map[y][x] == '\n' || map[y][x] == '.' || map[y][x] == '*') {
+                if (validNumber) {
                     sum += mapNumber;
                     validNumber = false;
                 }
+//                printf("X: %d\n", x);
                 mapNumber = 0;
             }
         }
@@ -53,12 +53,13 @@ int main() {
 }
 
 int checkForCharacter(char map[HEIGHT][WIDTH], int y, int x) {
-    int up[4] = {0, 1, -1};
-    int down[4] = {0, 1, -1};
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (map[y + up[i]][x + down[j]] == '#') {
-                printf("%c Y: %d X: %d\t", map[y + up[i]][x + down[j]], (y + up[i]) +1, (x + down[j]) +1);
+    int up[3] = {-1, 0, 1};
+    int down[3] = {-1, 0, 1};
+    for (int yy = 0; yy < 3; yy++) {
+        for (int xx = 0; xx < 3; xx++) {
+            if (map[y + up[yy]][x + down[xx]] == '*') {
+                printf("%c Y: %d X: %d \tnumber: %d sum: %d\n", map[y + up[yy]][x + down[xx]], (y + up[yy]) + 1,
+                       (x + down[xx]) + 1, mapNumber, sum);
                 return 1;
             }
         }
